@@ -1230,7 +1230,7 @@
             return mapping[clean] || catCSV; // Retourne le mapping ou le texte d'origine si aucun match
         }
 
-        function getSeriesCount(fullDisc) {
+        function getSeriesCount(fullDisc, categorie) {
             // Extrait le code (ex: "101" depuis "101 - Pistolet 3/7 EDT")
             const code = fullDisc.split(" - ")[0].trim();
 
@@ -1238,9 +1238,13 @@
             if (["101", "158"].includes(code)) {
                 return 3;
             }
-            const codesEDTPrecision = ["150", "152", "154", "105", "158", "150/154", "161", "162", "163"];
+            const codesEDTPrecision = ["150", "154", "161", "162", "163"];
             if (codesEDTPrecision.includes(code)) {
                 return 4;
+            }
+
+            if (code === "152" || code === "105") {
+                return 6;
             }
 
             if (code === "150/154") {
@@ -1270,6 +1274,18 @@
             // 4. Par défaut (ISSF, etc. : 6 séries)
 
             if (code === "107") {
+                return 4;
+            }
+
+            if (code === "103") {
+                return 4;
+            }
+
+            if (code === "102") {
+                return 8;
+            }
+
+            if ((code === "104" || code === "100") && categorie === "Dame 3") {
                 return 4;
             }
 
@@ -1339,7 +1355,7 @@
                     let totalScore = 0;
                     let hasScores = false;
 
-                    const maxSeries = getSeriesCount(fullDisc);
+                    const maxSeries = getSeriesCount(fullDisc, cat);
 
                     for (let sIdx = 1; sIdx <= maxSeries; sIdx++) {
                         let headerName = "SÉRIE " + sIdx;
@@ -1370,7 +1386,7 @@
 
                     let existingShooter = shootersData.find(s => s.lastName === nom && s.firstName === prenom && s.discipline === fullDisc);
 
-                    const fallbackSeries = Array(getSeriesCount(fullDisc)).fill(0);
+                    const fallbackSeries = Array(getSeriesCount(fullDisc, cat)).fill(0);
 
                     // Seuls les DNS et DSQ n'ont pas de résultat exploitable (score neutralisé à 0).
                     // Les HM (Hors Match) et DNF (Abandon) conservent leur score réellement réalisé.
@@ -1530,7 +1546,7 @@
 
             list.sort((a, b) => a.lastName.localeCompare(b.lastName)).forEach(s => {
                 // 1. On détermine dynamiquement la taille du tableau de séries attendu
-                const expectedCount = getSeriesCount(s.discipline);
+                const expectedCount = getSeriesCount(s.discipline, s.category);
                 const series = s.series || Array(expectedCount).fill(0);
 
                 const currentStatus = s.status || "OK";
