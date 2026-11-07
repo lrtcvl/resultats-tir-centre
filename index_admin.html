@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- LIGUE CENTRE-VAL DE LOIRE — version v2.1 — 14/07/2026 -->
+<!-- LIGUE CENTRE-VAL DE LOIRE — version v2.2 — 14/07/2026 -->
 <html lang="fr">
 
 <head>
@@ -718,7 +718,7 @@
     <button class="btn-create" onclick="openCreateModal()"
       style="background-color: #ffffff; color: var(--primary, #333); font-weight: bold;">+ Nouvelle Compétition</button>
     <button class="btn-logout" onclick="doLogout()" style="margin-top:auto;">⎋ Déconnexion</button>
-    <div class="sidebar-footer">LIGUE CENTRE-VAL DE LOIRE · v2.1 — 14/07/2026</div>
+    <div class="sidebar-footer">LIGUE CENTRE-VAL DE LOIRE · v2.2 — 14/07/2026</div>
   </aside>
 
   <main class="main-content">
@@ -881,18 +881,36 @@
     }
 
     function openQr(code) {
-      const url = `${GITHUB_BASE}/affichage_multicomp.html?comp=${code}`;
-      const compName = (compsCache[code] && compsCache[code].config && compsCache[code].config.name) ? compsCache[code].config.name : code;
+      const url = `${GITHUB_BASE}/affichage_multicomp.html?comp=${encodeURIComponent(code)}`;
+      
+      const compName = (compsCache[code] &&
+       compsCache[code].config &&
+        compsCache[code].config.name) 
+        ? compsCache[code].config.name 
+        : code;
 
       currentQrUrl = url;
       currentQrCompName = compName;
 
       document.getElementById('qrTitle').textContent = '📱 ' + code;
       document.getElementById('qrUrl').textContent = url;
+      
       const qrContainer = document.getElementById('qrcode');
       qrContainer.innerHTML = '';
-      new QRCode(qrContainer, { text: url, width: 200, height: 200 });
-      document.getElementById('qrModal').classList.add('active');
+
+      try {
+        new QRCode(qrContainer, {
+          text: url,
+          width: 200,
+          height: 200,
+          correctLevel: QRCode.CorrectLevel.L
+        });
+        
+        document.getElementById('qrModal').classList.add('active');
+      } catch (error) {
+        console.error("Erreur génération QR : ", error);
+        alert("Impossible de générer le QR Code. Vérifié la longueur de l'adresse.");
+      }
     }
 
     function closeQrModal() { document.getElementById('qrModal').classList.remove('active'); }
@@ -906,7 +924,7 @@
       // Génère un QR code en grand format, dédié à l'impression
       const posterQrContainer = document.getElementById('posterQr');
       posterQrContainer.innerHTML = '';
-      new QRCode(posterQrContainer, { text: currentQrUrl, width: 460, height: 460, correctLevel: QRCode.CorrectLevel.M });
+      new QRCode(posterQrContainer, { text: currentQrUrl, width: 460, height: 460, correctLevel: QRCode.CorrectLevel.L });
 
       // Bascule en mode "affiche plein écran" puis lance l'impression du navigateur
       // (l'utilisateur peut choisir "Enregistrer en PDF" comme destination)
