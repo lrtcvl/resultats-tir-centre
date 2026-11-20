@@ -209,6 +209,32 @@
       border-color: #cfe0f5;
     }
 
+    .final-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 14px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .final-toggle input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .final-toggle.is-final {
+      background: #e8f7ee;
+      border-color: #22c55e;
+      color: #166534;
+    }
+
     .card:hover::before {
       opacity: 1;
     }
@@ -876,6 +902,11 @@
       });
     }
 
+    function setFinal(code, checked) {
+      database.ref(CLUB_PATH + '/' + code + '/config/isFinal').set(!!checked)
+        .catch(err => alert("Erreur : impossible de modifier le statut (" + err.message + ")"));
+    }
+
     function deleteComp(code, name) {
       if (confirm(`Supprimer définitivement "${name}" ?`)) database.ref(CLUB_PATH + '/' + code).remove();
     }
@@ -962,6 +993,10 @@
               <span class="stat-label">Tireurs inscrits</span>
               <span class="stat-val">${shooterCount}</span>
             </div>
+            <label class="final-toggle ${config.isFinal ? 'is-final' : ''}">
+              <input type="checkbox" ${config.isFinal ? 'checked' : ''} onchange="setFinal('${code}', this.checked)">
+              <span>${config.isFinal ? 'Palmarès définitif' : 'Palmarès provisoire'} — cocher pour « Définitif »</span>
+            </label>
             <div class="actions-grid">
               <a href="saisie_multicomp.html?comp=${code}" class="btn-act btn-saisie">⌨️ Saisie</a>
               <button onclick="openQr('${code}')" class="btn-act btn-qr">📱 QR Code</button>

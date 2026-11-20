@@ -689,7 +689,7 @@
             <img src="logo.png" alt="Logo Ligue Centre-Val de Loire" class="header-logo">
             <div class="header-center">
                 <div class="title-line">
-                    <h1>PALMARÈS PROVISOIRE</h1>
+                    <h1 id="mainTitle">PALMARÈS PROVISOIRE</h1>
                     <div id="compTitle" class="comp-name">Chargement...</div>
                 </div>
                 <div class="sync-status" id="syncStatus">
@@ -715,10 +715,10 @@
                 <div class="speed-control">
                     <div class="speed-control-labels">
                         <span>⚡ Rapide</span>
-                        <span id="speedValueDisplay" class="speed-value">20</span>
+                        <span id="speedValueDisplay" class="speed-value">27</span>
                         <span>Lent 🐢</span>
                     </div>
-                    <input type="range" id="speedSlider" class="speed-slider" min="5" max="60" step="1" value="20">
+                    <input type="range" id="speedSlider" class="speed-slider" min="5" max="60" step="1" value="27">
                     <p class="speed-hint">Ajuste le défilement en direct, pour cette page uniquement (non enregistré).
                     </p>
                 </div>
@@ -729,7 +729,7 @@
                 <span class="code-block">...html?comp=XYZ&amp;speed=15</span>
                 <p><strong>Règles de réglage :</strong></p>
                 <ul>
-                    <li>La valeur par défaut est de <span class="highlight">20</span>.</li>
+                    <li>La valeur par défaut est de <span class="highlight">27</span>.</li>
                     <li>Plus le nombre est <strong>petit</strong> (ex: <code style="font-weight: bold;">10</code>), plus
                         le défilement sera <strong>rapide</strong>.</li>
                     <li>Plus le nombre est <strong>grand</strong> (ex: <code style="font-weight: bold;">35</code>), plus
@@ -760,7 +760,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const compId = urlParams.get('comp');
 
-        let scrollSpeed = parseInt(urlParams.get('speed')) || 20;
+        let scrollSpeed = parseInt(urlParams.get('speed')) || 27;
         let scrollIntervalId = null;
 
         // ─── Statut de connexion & horodatage de dernière mise à jour ───
@@ -912,6 +912,9 @@
             db.ref(CLUB_PATH + '/' + compId + '/config').on('value', snap => {
                 const config = snap.val();
                 document.getElementById('compTitle').textContent = (config && config.name) ? config.name : "Compétition en cours";
+                const statusLabel = (config && config.isFinal) ? "DÉFINITIF" : "PROVISOIRE";
+                document.getElementById('mainTitle').textContent = "PALMARÈS " + statusLabel;
+                document.title = "Palmarès " + statusLabel.toLowerCase() + " - " + CONFIG.clubName;
                 requestAnimationFrame(updateStickyOffsets);
 
                 lastUpdatedTimestamp = config && config.lastUpdated ? config.lastUpdated : null;
