@@ -4,14 +4,7 @@ Application web de gestion et d'affichage en direct des résultats de compétiti
 
 Le site public d'affichage se met à jour automatiquement à chaque saisie, sans rechargement de page : idéal pour un écran (TV, vidéoprojecteur, tablette) posé sur le lieu de la compétition.
 
-## Origine du projet
-
-Ce projet est basé sur le travail de la **Ligue de Lorraine de Tir** :
-👉 [liguelrtir-lr/resultats-tir](https://github.com/liguelrtir-lr/resultats-tir) — *tous les résultats en ligne*
-
-Il a été repris et adapté pour la Ligue Centre-Val de Loire, avec un ensemble d'améliorations fonctionnelles et techniques détaillées ci-dessous.
-
-## Améliorations apportées par rapport au projet d'origine
+## Améliorations apportées depuis le début du projet
 
 - **Affichage détaillé des séries** — chaque série de tir est désormais affichée individuellement (et non plus seulement le score total), avec un nombre de séries calculé automatiquement selon l'épreuve (École de Tir, ISSF, TAR, Armes Anciennes...).
 - **Import CSV depuis ISISWEB** — import direct des engagements et des résultats à partir d'un export CSV ISISWEB (séparateur `;`), avec reconnaissance automatique des colonnes (`Nom`, `Prenom`, `Association Nom`, `Catégorie E`, `Epreuve`, `Place`, `Série 1` à `Série N`, `Nombre mouches`...) et fusion avec les tireurs déjà engagés.
@@ -22,6 +15,7 @@ Il a été repris et adapté pour la Ligue Centre-Val de Loire, avec un ensemble
 - **Affiche QR Code imprimable (PDF/A4)** — depuis le tableau de bord admin, génération à l'impression d'une affiche A4 portrait prête à afficher sur le lieu de compétition (logo, nom de la compétition, QR code en grand format, URL de secours).
 - **Nom de la compétition visible sur la page de saisie** — affichage en temps réel du nom de la compétition en cours de saisie, en plus de son code technique.
 - **Tri de classement affiné** — en cas d'égalité de score, départage automatique par nombre de mouches puis par comparaison des séries (de la dernière à la première).
+- **Possibilité de passage de "Provisoire" à "Définitif"** - case à coché rajouté pour changer l'état du palmarès.
 
 ## Structure du projet
 
@@ -86,7 +80,3 @@ Le nombre de séries attendu par épreuve (3, 4, 6, 8, 10 selon les cas) est cal
 3. Déposer `logo.png` à la racine du projet.
 4. Héberger l'ensemble sur GitHub Pages (ou tout hébergement statique équivalent).
 5. Créer un compte administrateur dans Firebase Authentication pour accéder à `index_admin.html` et `saisie_multicomp.html`.
-
-## Licence
-
-Projet dérivé de [liguelrtir-lr/resultats-tir](https://github.com/liguelrtir-lr/resultats-tir). Se référer à la licence du dépôt d'origine pour les conditions de réutilisation.
